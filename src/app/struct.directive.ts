@@ -13,8 +13,17 @@ export class UnlessDirective {
 
   @Input() set appUnless(condition: boolean) {
     const hostView = this.viewContainer['_hostLView'] as Array<any>;
-    if (hostView && hostView.find) {
-      this.component = hostView.find(v => v && v['componentConfig'] != null);
+    if (hostView) {
+      hostView.forEach(obj => {
+        if (obj && Array.isArray(obj)) {
+          obj.forEach(subObj => {
+            if (subObj && this.component == null && subObj['componentConfig'] != null) {
+              this.component = subObj;
+            }
+          });
+        }
+      });
+
       console.log('component found', this.component);
     } else {
       console.log('no component found');
